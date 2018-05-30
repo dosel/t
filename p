@@ -38,9 +38,12 @@ function set_mgrep() {
                 M_GREP="grep"
             else
                 # Looks like BSD grep is installed so try GNU
-                if /usr/local/Cellar/grep/*/bin/grep --version >/dev/null; then
+                if [ -f /usr/local/Cellar/grep/*/bin/grep ]; then
                     # Found GNU grep installed
                     M_GREP="/usr/local/Cellar/grep/*/bin/grep"
+                elif [ -f /usr/local/Cellar/grep/*/bin/ggrep ]; then
+                    # Found GNU grep installed
+                    M_GREP="/usr/local/Cellar/grep/*/bin/ggrep"
                 else
                     # Will need to install GNU grep
                     please_install_gnu_grep
@@ -48,9 +51,12 @@ function set_mgrep() {
             fi
         else
             # No grep found in the path, try Cellar
-            if /usr/local/Cellar/grep/*/bin/grep --version >/dev/null; then
+            if [ -f /usr/local/Cellar/grep/*/bin/grep ]; then
                 # Found GNU grep installed
                 M_GREP="/usr/local/Cellar/grep/*/bin/grep"
+            elif [ -f /usr/local/Cellar/grep/*/bin/ggrep ]; then
+                # Found GNU grep installed
+                M_GREP="/usr/local/Cellar/grep/*/bin/ggrep"
             else
                 # Will need to install GNU grep
                 please_install_gnu_grep
