@@ -326,7 +326,7 @@ getDockerOpts(){
       -v /tmp/mounted:/tmp/mounted \
       -v /dev/shm:/dev/shm \
       --label zalenium_main \
-      dosel/zalenium:${zalenium_tag} \
+      ${zalenium_image}:${zalenium_tag} \
       start ${__z_startup_opts} \
             --desiredContainers "${__desired_containers_count}" \
             --maxDockerSeleniumContainers "${__max_containers}" \
@@ -542,15 +542,15 @@ function PullDependencies() {
     # Retry pulls up to 3 times as networks are known to be unreliable
 
     # https://github.com/zalando/zalenium
-    docker pull dosel/zalenium:${zalenium_tag} || \
-    docker pull dosel/zalenium:${zalenium_tag} || \
-    docker pull dosel/zalenium:${zalenium_tag}
+    docker pull ${zalenium_image}:${zalenium_tag} || \
+    docker pull ${zalenium_image}:${zalenium_tag} || \
+    docker pull ${zalenium_image}:${zalenium_tag}
 
-    [ -z "${dosel_tag}" ] && dosel_tag="${zalenium_tag}"
+    [ -z "${docker_selenium_tag}" ] && docker_selenium_tag="${zalenium_tag}"
     # https://github.com/elgalu/docker-selenium
-    docker pull elgalu/selenium:${dosel_tag} || \
-    docker pull elgalu/selenium:${dosel_tag} || \
-    docker pull elgalu/selenium:${dosel_tag}
+    docker pull ${docker_selenium_image}:${docker_selenium_tag} || \
+    docker pull ${docker_selenium_image}:${docker_selenium_tag} || \
+    docker pull ${docker_selenium_image}:${docker_selenium_tag}
 }
 
 function usage() {
@@ -563,9 +563,10 @@ function usage() {
     echo ""
     echo -e "\t start, -s, --start\t\tStart Zalenium"
     echo -e "\t stop, --stop\t\t\tStop Zalenium"
-    echo -e "\t -i, --interactive\t\t\tAttach to current process (default detached)"
+    echo -e "\t -i, --interactive\t\tAttach to current process (default detached)"
     echo -e "\t --docker-opt\t\t\tCustom Zalenium docker startup options"
     echo -e "\t --force-docker-opts\t\tOverwrite the default Zalenium docker startup options"
+    echo -e "\t --tag\t\t\t\tUse a specific tag of Zalenium and Docker-Selenium from Zalando's open source registry"
     #echo -e "\t -u ." //TODO: define upgrade mechanism
     echo ""
     echo -e "\t Tests:"
@@ -574,15 +575,15 @@ function usage() {
     echo -e "\t --maxDockerSeleniumContainers\tMax number of docker-selenium containers running at the same time (default 10)"
     echo -e "\t --sauceLabsEnabled\t\tDetermines if the Sauce Labs node is started (default true)"
     echo -e "\t --videoRecordingEnabled\tRecord video of tests (default true)"
-    echo -e "\t --videos-dir\tDirectory where to store videos (default /tmp/videos)"
+    echo -e "\t --videos-dir\t\t\tDirectory where to store videos (default /tmp/videos)"
     echo -e "\t --screenWidth\t\t\tSets the screen width (default 1900)"
     echo -e "\t --screenHeight\t\t\tSets the screen height (default 1800)"
     echo -e "\t --timeZone\t\t\tSets the time zone in the containers (default \"Europe/Berlin\")"
-    echo -e "\t --sendAnonymousUsageInfo\t\t\tCollects anonymous usage of the tool. Defaults to 'true'"
-    echo -e "\t --debugEnabled\t\t\tenables LogLevel.FINE. Defaults to 'false'"
-    echo -e "\t --seleniumImageName\t\t\tenables overriding of the Docker selenium image to use. Defaults to \"elgalu/selenium\""
-    echo -e "\t --maxTestSessions\t\t\max amount of tests executed per container, defaults to '1'."
-    echo -e "\t --keepOnlyFailedTests\t\t\Keeps only videos of failed tests (you need to send a cookie). Defaults to 'false'"
+    echo -e "\t --sendAnonymousUsageInfo\tCollects anonymous usage of the tool. Defaults to 'true'"
+    echo -e "\t --debugEnabled\t\t\tEnables LogLevel.FINE. Defaults to 'false'"
+    echo -e "\t --seleniumImageName\t\tEnables overriding of the Docker selenium image to use. Defaults to \"elgalu/selenium\""
+    echo -e "\t --maxTestSessions\t\tMax amount of tests executed per container, defaults to '1'."
+    echo -e "\t --keepOnlyFailedTests\t\tKeeps only videos of failed tests (you need to send a cookie). Defaults to 'false'"
     echo ""
 
     echo ""
@@ -601,6 +602,8 @@ upgrade_if_needed="false"
 we_have_sudo="true"
 start_it="false"
 stop_it="false"
+zalenium_image="dosel/zalenium"
+docker_selenium_image="elgalu/selenium"
 zalenium_tag="latest"
 deprecated_parameters="false"
 
@@ -671,6 +674,13 @@ while [ "$1" != "" ]; do
         stop)
             stop_it="true"
             ;;
+        --tag)
+            zalenium_tag="${2}"
+            docker_selenium_tag="${2}"
+            zalenium_image="registry.opensource.zalan.do/tip/zalenium"
+            docker_selenium_image="registry.opensource.zalan.do/tip/docker-selenium"
+            shift
+            ;;
         --desiredContainers)
             deprecated_parameters="false"
             DESIRED_CONTAINERS_START_COUNT="${2}"
@@ -716,10 +726,6 @@ while [ "$1" != "" ]; do
             DEBUG_ENABLED="${2}"
             shift
             ;;
-        --debugEnabled)
-            DEBUG_ENABLED="${2}"
-            shift
-            ;;
         --seleniumImageName)
             SELENIUM_IMAGE_NAME="${2}"
             shift
@@ -746,7 +752,7 @@ while [ "$1" != "" ]; do
         3*)
             echo "Will use zalenium:${PARAM} and docker-selenium:3"
             zalenium_tag="${PARAM}"
-            dosel_tag="3"
+            docker_selenium_tag="3"
             ;;
         2*)
             zalenium_tag="$1"
