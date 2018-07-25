@@ -218,7 +218,7 @@ getDockerOpts(){
     local __max_containers=${MAX_CONTAINERS_COUNT:-"60"}
     local __time_zone=${TIME_ZONE:-"Europe/Berlin"}
     local __debug_enabled=${DEBUG_ENABLED:-"false"}
-    local __selenium_image_name=${SELENIUM_IMAGE_NAME:-"elgalu/selenium"}
+    local __selenium_image_name=${SELENIUM_IMAGE_NAME:-${docker_selenium_image}}
     local __max_test_sessions=${MAX_TEST_SESSIONS:-"1"}
     local __keep_only_failed_tests=${KEEP_ONLY_FAILED_TESTS:-"false"}
     local __send_anonymous_usage_info=${SEND_ANONYMOUS_USAGE_INFO:-"true"}
