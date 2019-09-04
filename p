@@ -19,7 +19,11 @@ function mtimeout() {
 function please_install_gnu_grep() {
     echo "GNU grep is not installed, please install with:"
     echo "  brew tap homebrew/dupes"
-    echo "  brew install grep --with-default-names"
+    B_VERSION=$(IFS=" " read -r -a array <<< "$(brew -v)" && echo "${array[1]}" && [[ ${array[1]} == 2* ]])
+    if [ $B_VERSION == 1.* ]; then
+      echo "  brew install grep --with-default-names"
+    else
+      echo "  brew install grep"
     echo ""
     exit 16
 }
