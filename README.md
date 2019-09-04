@@ -1,22 +1,22 @@
 ## Zalenium one-liner installer
 
-    curl -sSL https://raw.githubusercontent.com/dosel/t/i/p | bash
+    curl -sSL https://raw.githubusercontent.com/antlong/t/i/p | bash
 
 ## Install and start
 
-    curl -sSL https://raw.githubusercontent.com/dosel/t/i/p | bash -s start
+    curl -sSL https://raw.githubusercontent.com/antlong/t/i/p | bash -s start
 
 ## Install and start with latest Selenium 3
 
-    curl -sSL https://raw.githubusercontent.com/dosel/t/i/p | bash -s 3 start
+    curl -sSL https://raw.githubusercontent.com/antlong/t/i/p | bash -s 3 start
 
 ## Install and start with latest Selenium 2
 
-    curl -sSL https://raw.githubusercontent.com/dosel/t/i/p | bash -s 2 start
+    curl -sSL https://raw.githubusercontent.com/antlong/t/i/p | bash -s 2 start
 
 ## Install and start a specific version
 
-    curl -sSL https://raw.githubusercontent.com/dosel/t/i/p | bash -s 3.0.1a start
+    curl -sSL https://raw.githubusercontent.com/antlong/t/i/p | bash -s 3.0.1a start
 
 ## Tiny smoke python selenium test
 
@@ -25,4 +25,4 @@
 
 ## Cleanup
 
-    curl -sSL https://raw.githubusercontent.com/dosel/t/i/p | bash -s stop
+    curl -sSL https://raw.githubusercontent.com/antlong/t/i/p | bash -s stop
