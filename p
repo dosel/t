@@ -24,6 +24,7 @@ function please_install_gnu_grep() {
       echo "  brew install grep --with-default-names"
     else
       echo "  brew install grep"
+    fi
     echo ""
     exit 16
 }
